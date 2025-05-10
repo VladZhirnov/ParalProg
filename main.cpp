@@ -4,6 +4,7 @@
 #include <chrono>
 #include <string>
 #include <sstream>
+#include <omp.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -59,6 +60,7 @@ vector<vector<float>> multiplyMatrices(const vector<vector<float>> &a, const vec
     
     vector<vector<float>> result(a_rows, vector<float>(b_cols, 0));
     
+    #pragma omp parallel for collapse(2)
     for (size_t i = 0; i < a_rows; ++i) {
         for (size_t j = 0; j < b_cols; ++j) {
             for (size_t k = 0; k < a_cols; ++k) {
@@ -91,6 +93,8 @@ int get_time(const string &file1, const string &file2, const string &out_file) {
 
 
 int main() {
+    omp_set_num_threads(omp_get_max_threads());
+
     int time_10 = get_time("Matrix_1/matrix1_10.txt", "Matrix_2/matrix2_10.txt", "Output/output_10.txt");
     int time_20 = get_time("Matrix_1/matrix1_20.txt", "Matrix_2/matrix2_20.txt", "Output/output_20.txt");
     int time_30 = get_time("Matrix_1/matrix1_30.txt", "Matrix_2/matrix2_30.txt", "Output/output_30.txt");
@@ -109,13 +113,28 @@ int main() {
                 << time_70 << " " << time_80 << " " << time_90 << " "
                 << time_100 << " " << time_1000;
     
-    ofstream time_file("times.txt");
+    ofstream time_file("times_openmp.txt");
     if (time_file.is_open()) {
         time_file << times_stream.str();
         time_file.close();
     } else {
         cerr << "Error: Failed to create file times.txt" << endl;
-    }
+    } 
+
+    cout << "Number of threads used: " << omp_get_max_threads() << endl;
+    cout << "\nExecution times saved to times.txt:" << endl;
+
+    cout << time_10 << " μs" << endl;
+    cout << time_20 << " μs" << endl;
+    cout << time_30 << " μs" << endl;
+    cout << time_40 << " μs" << endl;
+    cout << time_50 << " μs" << endl;
+    cout << time_60 << " μs" << endl;
+    cout << time_70 << " μs" << endl;
+    cout << time_80 << " μs" << endl;
+    cout << time_90 << " μs" << endl;
+    cout << time_100 << " μs" << endl;
+    cout << time_1000 << " μs" << endl;
 
     cout << "All operations completed. Results written to times.txt" << endl;
     return 0;
