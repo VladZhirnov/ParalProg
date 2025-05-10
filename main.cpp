@@ -116,7 +116,7 @@ int main() {
     } else {
         cerr << "Error: Failed to create file times.txt" << endl;
     }
-    
+
     cout << "All operations completed. Results written to times.txt" << endl;
     return 0;
 }
