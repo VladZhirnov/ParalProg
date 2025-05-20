@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+/check_mul.txt
 # C extensions
 *.so
 
